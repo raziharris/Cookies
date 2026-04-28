@@ -2,7 +2,11 @@ const quantitySInput = document.querySelector("#quantity-s");
 const quantityMInput = document.querySelector("#quantity-m");
 const orderMethodSelect = document.querySelector("#order-method");
 const postageFields = document.querySelector("#postage-fields");
+const pickupGuide = document.querySelector("#pickup-guide");
+const postageGuide = document.querySelector("#postage-guide");
+const deliveryGuide = document.querySelector("#delivery-guide");
 const totalDisplay = document.querySelector("#total-display");
+const summaryNote = document.querySelector("#summary-note");
 const customerNameInput = document.querySelector("#customer-name");
 const customerPhoneInput = document.querySelector("#customer-phone");
 const receiverNameInput = document.querySelector("#receiver-name");
@@ -29,28 +33,66 @@ function normalizeQuantity(input, fallback = 0) {
   return value;
 }
 
+function getCookieQuantities() {
+  return {
+    quantityS: normalizeQuantity(quantitySInput, 0),
+    quantityM: normalizeQuantity(quantityMInput, 0),
+  };
+}
+
+function getPostageFee(totalJars) {
+  if (totalJars <= 0) {
+    return 0;
+  }
+
+  if (totalJars <= 5) {
+    return 8;
+  }
+
+  if (totalJars <= 15) {
+    return 10;
+  }
+
+  return 15;
+}
+
 function updateTotal() {
-  const quantityS = normalizeQuantity(quantitySInput, 0);
-  const quantityM = normalizeQuantity(quantityMInput, 0);
-  const total = quantityS * prices.S + quantityM * prices.M;
-  totalDisplay.textContent = `RM${total}`;
+  const { quantityS, quantityM } = getCookieQuantities();
+  const cookiesTotal = quantityS * prices.S + quantityM * prices.M;
+  const totalJars = quantityS + quantityM;
+  const postageFee =
+    orderMethodSelect.value === "Postage" ? getPostageFee(totalJars) : 0;
+  const grandTotal = cookiesTotal + postageFee;
+
+  summaryNote.textContent =
+    postageFee > 0
+      ? `Includes RM${postageFee} postage`
+      : "Cookies total only";
+  totalDisplay.textContent = `RM${grandTotal}`;
 }
 
 function updatePostageFields() {
-  const needsAddress =
-    orderMethodSelect.value === "Postage" ||
-    orderMethodSelect.value === "Lalamove/Grab";
+  const isPostage = orderMethodSelect.value === "Postage";
+  const isSelfCollect = orderMethodSelect.value === "Self collect";
+  const isDeliveryRunner = orderMethodSelect.value === "Lalamove/Grab";
+  const needsAddress = isPostage || isDeliveryRunner;
   postageFields.classList.toggle("hidden", !needsAddress);
+  pickupGuide.classList.toggle("hidden", !isSelfCollect);
+  postageGuide.classList.toggle("hidden", !isPostage);
+  deliveryGuide.classList.toggle("hidden", !isDeliveryRunner);
+  updateTotal();
 }
 
 function buildOrderMessage() {
-  const quantityS = normalizeQuantity(quantitySInput, 0);
-  const quantityM = normalizeQuantity(quantityMInput, 0);
-  const total = quantityS * prices.S + quantityM * prices.M;
+  const { quantityS, quantityM } = getCookieQuantities();
+  const totalJars = quantityS + quantityM;
+  const cookiesTotal = quantityS * prices.S + quantityM * prices.M;
   const customerName = customerNameInput.value.trim() || "-";
   const customerPhone = customerPhoneInput.value.trim() || "-";
   const notes = orderNotesInput.value.trim() || "-";
   const orderMethod = orderMethodSelect.value;
+  const postageFee = orderMethod === "Postage" ? getPostageFee(totalJars) : 0;
+  const total = cookiesTotal + postageFee;
   const needsAddress =
     orderMethod === "Postage" || orderMethod === "Lalamove/Grab";
 
@@ -60,6 +102,8 @@ function buildOrderMessage() {
     "Product: Sea Salt Callebaut Cookies",
     `Size S (27 pcs++): ${quantityS} x RM${prices.S}`,
     `Size M (40 pcs++): ${quantityM} x RM${prices.M}`,
+    `Cookies subtotal: RM${cookiesTotal}`,
+    `Postage fee: RM${postageFee}`,
     `Estimated total: RM${total}`,
     "",
     "Customer Details",
