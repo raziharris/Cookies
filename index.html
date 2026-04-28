@@ -87,26 +87,33 @@
                 />
               </label>
 
-              <div class="field-grid">
-                <label>
-                  Cookie size
-                  <select id="size-select">
-                    <option value="S">Size S (27 pcs++)</option>
-                    <option value="M">Size M (40 pcs++)</option>
-                  </select>
-                </label>
+              <div class="quantity-block">
+                <p class="field-label">Quantity</p>
+                <div class="field-grid">
+                  <label>
+                    Size S (27 pcs++)
+                    <input
+                      id="quantity-s"
+                      type="number"
+                      min="0"
+                      max="1000"
+                      value="1"
+                      placeholder="0"
+                    />
+                  </label>
 
-                <label>
-                  Quantity
-                  <input
-                    id="quantity-input"
-                    type="number"
-                    min="1"
-                    max="1000"
-                    value="1"
-                    placeholder="Enter quantity"
-                  />
-                </label>
+                  <label>
+                    Size M (40 pcs++)
+                    <input
+                      id="quantity-m"
+                      type="number"
+                      min="0"
+                      max="1000"
+                      value="0"
+                      placeholder="0"
+                    />
+                  </label>
+                </div>
               </div>
 
               <label>

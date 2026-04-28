@@ -1,5 +1,5 @@
-const sizeSelect = document.querySelector("#size-select");
-const quantityInput = document.querySelector("#quantity-input");
+const quantitySInput = document.querySelector("#quantity-s");
+const quantityMInput = document.querySelector("#quantity-m");
 const orderMethodSelect = document.querySelector("#order-method");
 const postageFields = document.querySelector("#postage-fields");
 const totalDisplay = document.querySelector("#total-display");
@@ -23,12 +23,16 @@ const prices = {
   M: 36,
 };
 
+function normalizeQuantity(input, fallback = 0) {
+  const value = Math.min(1000, Math.max(0, Number(input.value) || fallback));
+  input.value = value;
+  return value;
+}
+
 function updateTotal() {
-  const size = sizeSelect.value;
-  const quantity = Math.min(1000, Math.max(1, Number(quantityInput.value) || 1));
-  const unitPrice = prices[size];
-  const total = unitPrice * quantity;
-  quantityInput.value = quantity;
+  const quantityS = normalizeQuantity(quantitySInput, 0);
+  const quantityM = normalizeQuantity(quantityMInput, 0);
+  const total = quantityS * prices.S + quantityM * prices.M;
   totalDisplay.textContent = `RM${total}`;
 }
 
@@ -40,10 +44,9 @@ function updatePostageFields() {
 }
 
 function buildOrderMessage() {
-  const size = sizeSelect.value;
-  const quantity = Math.min(1000, Math.max(1, Number(quantityInput.value) || 1));
-  const unitPrice = prices[size];
-  const total = unitPrice * quantity;
+  const quantityS = normalizeQuantity(quantitySInput, 0);
+  const quantityM = normalizeQuantity(quantityMInput, 0);
+  const total = quantityS * prices.S + quantityM * prices.M;
   const customerName = customerNameInput.value.trim() || "-";
   const customerPhone = customerPhoneInput.value.trim() || "-";
   const notes = orderNotesInput.value.trim() || "-";
@@ -55,9 +58,8 @@ function buildOrderMessage() {
     "Hello, I would like to place an order.",
     "",
     "Product: Sea Salt Callebaut Cookies",
-    `Size: ${size}`,
-    `Quantity: ${quantity}`,
-    `Price per unit: RM${unitPrice}`,
+    `Size S (27 pcs++): ${quantityS} x RM${prices.S}`,
+    `Size M (40 pcs++): ${quantityM} x RM${prices.M}`,
     `Estimated total: RM${total}`,
     "",
     "Customer Details",
@@ -97,11 +99,11 @@ function updateReceiptLink() {
   sendReceiptButton.href = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 }
 
-sizeSelect.addEventListener("change", updateTotal);
-quantityInput.addEventListener("input", updateTotal);
+quantitySInput.addEventListener("input", updateTotal);
+quantityMInput.addEventListener("input", updateTotal);
 orderMethodSelect.addEventListener("change", updatePostageFields);
-sizeSelect.addEventListener("change", updateReceiptLink);
-quantityInput.addEventListener("input", updateReceiptLink);
+quantitySInput.addEventListener("input", updateReceiptLink);
+quantityMInput.addEventListener("input", updateReceiptLink);
 orderMethodSelect.addEventListener("change", updateReceiptLink);
 customerNameInput.addEventListener("input", updateReceiptLink);
 customerPhoneInput.addEventListener("input", updateReceiptLink);

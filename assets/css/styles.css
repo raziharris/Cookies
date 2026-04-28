@@ -246,6 +246,18 @@ label {
   font-weight: 700;
 }
 
+.quantity-block {
+  display: grid;
+  gap: 10px;
+}
+
+.field-label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
 input,
 select,
 textarea {
