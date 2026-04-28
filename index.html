@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sea Salt Callebaut Cookies</title>
+    <title>Chubbychubakes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,69 +17,24 @@
       <header class="hero">
         <nav class="topbar" aria-label="Primary">
           <div class="brand">
-            <span class="brand-mark">SC</span>
-            <div>
-              <p>Sea Salt Callebaut</p>
-              <span>Freshly baked chocolate chip cookies</span>
-            </div>
+            <img
+              class="brand-logo"
+              src="assets/images/logo/logo.jpeg"
+              alt="Chubbychubakes logo"
+            />
+            <h1 class="brand-title">Chubbychubakes</h1>
           </div>
-          <a class="ghost-link" href="#order-form">Order now</a>
+          <div class="header-actions">
+            <a class="button primary" href="#order-form">Order now</a>
+            <a class="button secondary" href="#payment">View QR</a>
+          </div>
         </nav>
-
-        <div class="hero-grid">
-          <section class="hero-copy">
-            <p class="eyebrow">One product, easy ordering</p>
-            <h1>Sea Salt Callebaut Cookies</h1>
-            <p class="hero-text">
-              Made with pure butter and Belgium chocolate chips, finished with
-              a pinch of sea salt on top. Customers can choose a size, enter
-              their quantity, fill in a few details, and pay instantly with QR
-              code.
-            </p>
-            <div class="hero-actions">
-              <a class="button primary" href="#order-form">Start order</a>
-              <a class="button secondary" href="#payment">View payment</a>
-            </div>
-          </section>
-
-          <aside class="hero-card" aria-label="Featured product">
-            <div class="product-visual">
-              <img
-                class="hero-product-image"
-                src="assets/images/cookies/11111.jpeg"
-                alt="Sea Salt Callebaut Choc Chip Cookies on board"
-              />
-              <div class="product-badge">Ready to order</div>
-            </div>
-            <div class="hero-card-copy">
-              <p>Current product</p>
-              <h2>Sea Salt Callebaut Cookies</h2>
-              <span>Clean one-product layout that keeps the cookies, pricing, and order steps easy to understand.</span>
-            </div>
-          </aside>
-        </div>
       </header>
 
       <main>
-        <section class="section features">
-          <article>
-            <h3>Freshly baked cookies</h3>
-            <p>Sea salt cookies with Belgium chocolate chips that look rich, premium, and gift-ready.</p>
-          </article>
-          <article>
-            <h3>Cookie size options</h3>
-            <p>Customers can choose the right size easily without dealing with too many options.</p>
-          </article>
-          <article>
-            <h3>Quick order and payment</h3>
-            <p>Order your cookies, fill in the key details, and pay quickly with DuitNow QR.</p>
-          </article>
-        </section>
-
         <section class="section order-layout">
           <section class="panel product-panel">
             <div class="section-heading">
-              <p class="eyebrow">Product</p>
               <h2>Sea Salt Callebaut Choc Chip</h2>
             </div>
 
@@ -100,19 +55,13 @@
                 />
               </div>
               <div class="product-details">
-                <p class="product-price" id="price-display">RM25</p>
-                <p class="product-description">
-                  Made with pure butter and Belgium chocolate chips, with a
-                  light pinch of sea salt on top. Perfect for gifting, sharing,
-                  or everyday orders.
-                </p>
-                <p class="product-description">
+                <p class="product-description compact-copy">
                   <strong>Ingredients:</strong> Pure Butter, Brown Sugar, Castor Sugar, Egg, Vanilla essance, Flour, Corn Starch, Callebaut Chocolate Chips, Maldon Sea Salts
                 </p>
                 <ul class="product-points">
-                  <li>Size S: RM25 for 40 plus or minus pieces, 200 gram</li>
-                  <li>Size M: RM36 for 27 plus or minus pieces, 300 gram</li>
-                  <li>Available for self collect, COD, postage, or Lalamove/Grab</li>
+                  <li>Size S: RM25 for 27 pcs++, 200 gram</li>
+                  <li>Size M: RM36 for 40 pcs++, 300 gram</li>
+                  <li>Available for self collect, postage, or Lalamove/Grab</li>
                 </ul>
               </div>
             </div>
@@ -120,8 +69,7 @@
 
           <section class="panel order-panel" id="order-form">
             <div class="section-heading">
-              <p class="eyebrow">Order form</p>
-              <h2>Place your order</h2>
+              <h2>Order</h2>
             </div>
 
             <form class="order-form" id="order-form-fields">
@@ -143,8 +91,8 @@
                 <label>
                   Cookie size
                   <select id="size-select">
-                    <option value="S">Size S</option>
-                    <option value="M">Size M</option>
+                    <option value="S">Size S (27 pcs++)</option>
+                    <option value="M">Size M (40 pcs++)</option>
                   </select>
                 </label>
 
@@ -165,7 +113,6 @@
                 Order method
                 <select id="order-method">
                   <option value="Self collect">Self collect</option>
-                  <option value="Cash on delivery (COD)">Cash on delivery (COD)</option>
                   <option value="Postage">Postage</option>
                   <option value="Lalamove/Grab">Lalamove/Grab</option>
                 </select>

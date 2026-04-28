@@ -40,8 +40,6 @@ img {
 }
 
 .topbar,
-.hero-grid,
-.features,
 .order-layout,
 .field-grid,
 .payment-grid,
@@ -54,41 +52,48 @@ img {
 .topbar {
   grid-template-columns: 1fr auto;
   align-items: center;
-  padding: 12px 0 28px;
+  padding: 4px 0 8px;
+  gap: 18px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
-.brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #f8dce2, #f7efe6);
-  box-shadow: var(--shadow);
-  font-family: "Fraunces", serif;
-  font-size: 1.2rem;
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
-.brand p,
+.brand-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 999px;
+  box-shadow: 0 12px 26px rgba(168, 116, 128, 0.16);
+  border: 2px solid rgba(255, 250, 246, 0.94);
+}
+
+.brand-title,
 .hero-copy h1,
 .hero-card-copy h2,
 .section-heading h2 {
   margin: 0;
 }
 
-.brand p {
-  font-weight: 700;
+.brand-title {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.5rem, 2.7vw, 2.5rem);
+  line-height: 0.96;
+  color: #6f4d51;
+  letter-spacing: 0.01em;
 }
 
-.brand span,
-.hero-text,
-.ghost-link,
 input,
 select,
 textarea,
@@ -96,24 +101,6 @@ textarea,
 .product-description,
 .product-points {
   color: var(--muted);
-}
-
-.ghost-link {
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.hero-grid {
-  grid-template-columns: 1.08fr 0.92fr;
-  align-items: center;
-  gap: 28px;
-}
-
-.hero-copy h1 {
-  font-family: "Fraunces", serif;
-  font-size: clamp(2.5rem, 5vw, 4.2rem);
-  line-height: 1.02;
-  max-width: 10ch;
 }
 
 .eyebrow {
@@ -125,26 +112,13 @@ textarea,
   margin: 0 0 12px;
 }
 
-.hero-text {
-  max-width: 52ch;
-  font-size: 1.04rem;
-  line-height: 1.75;
-  margin: 20px 0 0;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 28px;
-}
-
 .button {
   border: 0;
   border-radius: 999px;
-  padding: 14px 20px;
+  padding: 11px 16px;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.95rem;
   font-family: inherit;
   display: inline-flex;
   align-items: center;
@@ -164,9 +138,7 @@ textarea,
   border: 1px solid var(--line);
 }
 
-.hero-card,
-.panel,
-.features article {
+.panel {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.65);
   border-radius: 24px;
@@ -174,85 +146,18 @@ textarea,
   backdrop-filter: blur(12px);
 }
 
-.hero-card,
-.features article,
 .panel {
   padding: 26px;
-}
-
-.product-visual {
-  position: relative;
-}
-
-.hero-product-image {
-  width: 100%;
-  min-height: 340px;
-  max-height: 420px;
-  object-fit: cover;
-  border-radius: 24px;
-  display: block;
-  box-shadow: 0 16px 40px rgba(107, 74, 61, 0.16);
-}
-
-.product-badge {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgba(255, 250, 246, 0.92);
-  border: 1px solid var(--line);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.hero-card-copy {
-  padding-top: 18px;
-}
-
-.hero-card-copy p {
-  margin: 0 0 6px;
-  color: var(--accent-strong);
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-}
-
-.hero-card-copy h2 {
-  font-family: "Fraunces", serif;
-  font-size: 1.8rem;
-}
-
-.hero-card-copy span {
-  display: block;
-  margin-top: 8px;
-  line-height: 1.65;
-  color: var(--muted);
 }
 
 .section {
   margin-top: 26px;
 }
-
-.features {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.features article {
-  display: grid;
-  gap: 8px;
-  align-content: start;
-  min-height: 152px;
-}
-
-.features h3,
 .product-price,
 .section-heading h2 {
   margin-top: 0;
 }
 
-.features p,
 .payment-steps p,
 .product-description,
 .product-points {
@@ -316,10 +221,17 @@ textarea,
 
 .product-points {
   padding-left: 18px;
+  display: grid;
+  gap: 8px;
 }
 
 .product-points li + li {
-  margin-top: 8px;
+  margin-top: 0;
+}
+
+.compact-copy {
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .order-form {
@@ -456,15 +368,20 @@ input[type="number"] {
 }
 
 @media (max-width: 920px) {
-  .hero-grid,
-  .features,
   .order-layout,
   .payment-grid {
     grid-template-columns: 1fr;
   }
 
-  .hero-copy h1 {
-    max-width: 100%;
+  .topbar {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 16px;
+  }
+
+  .brand {
+    justify-content: center;
+    text-align: center;
   }
 }
 
@@ -473,14 +390,19 @@ input[type="number"] {
     width: min(100% - 20px, 1120px);
   }
 
-  .topbar,
   .field-grid,
   .summary-strip {
     grid-template-columns: 1fr;
   }
 
-  .topbar {
-    gap: 16px;
+  .brand-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 999px;
+  }
+
+  .brand-title {
+    font-size: clamp(1.4rem, 8vw, 2rem);
   }
 
   .button,
@@ -489,8 +411,10 @@ input[type="number"] {
     text-align: center;
   }
 
-  .hero-actions {
+  .header-actions {
     flex-direction: column;
+    width: 100%;
+    max-width: 320px;
   }
 
   .gallery-grid .gallery-main {
@@ -501,9 +425,7 @@ input[type="number"] {
     height: 150px;
   }
 
-  .features article,
-  .panel,
-  .hero-card {
+  .panel {
     padding: 20px;
   }
 }

@@ -2,7 +2,6 @@ const sizeSelect = document.querySelector("#size-select");
 const quantityInput = document.querySelector("#quantity-input");
 const orderMethodSelect = document.querySelector("#order-method");
 const postageFields = document.querySelector("#postage-fields");
-const priceDisplay = document.querySelector("#price-display");
 const totalDisplay = document.querySelector("#total-display");
 const customerNameInput = document.querySelector("#customer-name");
 const customerPhoneInput = document.querySelector("#customer-phone");
@@ -30,7 +29,6 @@ function updateTotal() {
   const unitPrice = prices[size];
   const total = unitPrice * quantity;
   quantityInput.value = quantity;
-  priceDisplay.textContent = `RM${unitPrice}`;
   totalDisplay.textContent = `RM${total}`;
 }
 
