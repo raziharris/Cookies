@@ -1,0 +1,509 @@
+:root {
+  --bg: #fffaf5;
+  --panel: rgba(255, 252, 249, 0.88);
+  --line: rgba(184, 141, 149, 0.18);
+  --text: #584647;
+  --muted: #8d7275;
+  --accent: #f2c6cf;
+  --accent-strong: #dc97a6;
+  --cream: #f7ede2;
+  --shadow: 0 24px 60px rgba(171, 126, 137, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(252, 225, 230, 0.85), transparent 30%),
+    radial-gradient(circle at top right, rgba(247, 237, 226, 0.9), transparent 28%),
+    linear-gradient(180deg, #fffaf6 0%, #fff5f6 100%);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.page-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 48px;
+}
+
+.topbar,
+.hero-grid,
+.features,
+.order-layout,
+.field-grid,
+.payment-grid,
+.summary-strip,
+.product-showcase {
+  display: grid;
+  gap: 20px;
+}
+
+.topbar {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 12px 0 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #f8dce2, #f7efe6);
+  box-shadow: var(--shadow);
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+}
+
+.brand p,
+.hero-copy h1,
+.hero-card-copy h2,
+.section-heading h2 {
+  margin: 0;
+}
+
+.brand p {
+  font-weight: 700;
+}
+
+.brand span,
+.hero-text,
+.ghost-link,
+input,
+select,
+textarea,
+.payment-panel p,
+.product-description,
+.product-points {
+  color: var(--muted);
+}
+
+.ghost-link {
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.hero-grid {
+  grid-template-columns: 1.08fr 0.92fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.hero-copy h1 {
+  font-family: "Fraunces", serif;
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  line-height: 1.02;
+  max-width: 10ch;
+}
+
+.eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--accent-strong);
+  margin: 0 0 12px;
+}
+
+.hero-text {
+  max-width: 52ch;
+  font-size: 1.04rem;
+  line-height: 1.75;
+  margin: 20px 0 0;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.button {
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 20px;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.button.primary {
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  color: #fffaf8;
+  box-shadow: 0 14px 28px rgba(223, 143, 160, 0.22);
+}
+
+.button.secondary {
+  background: rgba(255, 250, 246, 0.88);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.hero-card,
+.panel,
+.features article {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.hero-card,
+.features article,
+.panel {
+  padding: 26px;
+}
+
+.product-visual {
+  position: relative;
+}
+
+.hero-product-image {
+  width: 100%;
+  min-height: 340px;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+  box-shadow: 0 16px 40px rgba(107, 74, 61, 0.16);
+}
+
+.product-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 250, 246, 0.92);
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.hero-card-copy {
+  padding-top: 18px;
+}
+
+.hero-card-copy p {
+  margin: 0 0 6px;
+  color: var(--accent-strong);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.hero-card-copy h2 {
+  font-family: "Fraunces", serif;
+  font-size: 1.8rem;
+}
+
+.hero-card-copy span {
+  display: block;
+  margin-top: 8px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.features {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.features article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-height: 152px;
+}
+
+.features h3,
+.product-price,
+.section-heading h2 {
+  margin-top: 0;
+}
+
+.features p,
+.payment-steps p,
+.product-description,
+.product-points {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.order-layout {
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 24px;
+}
+
+.section-heading {
+  margin-bottom: 18px;
+}
+
+.section-heading h2 {
+  font-family: "Fraunces", serif;
+  font-size: 1.8rem;
+}
+
+.product-showcase {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 14px 30px rgba(120, 84, 72, 0.12);
+}
+
+.gallery-grid .gallery-main {
+  grid-column: 1 / -1;
+  height: 300px;
+}
+
+.product-price {
+  font-family: "Fraunces", serif;
+  font-size: 2.2rem;
+  color: var(--text);
+}
+
+.product-details {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(255, 249, 246, 0.82);
+  border: 1px solid var(--line);
+}
+
+.product-points {
+  padding-left: 18px;
+}
+
+.product-points li + li {
+  margin-top: 8px;
+}
+
+.order-form {
+  display: grid;
+  gap: 18px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.84);
+  font: inherit;
+  color: var(--text);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+
+.field-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.postage-fields {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 248, 245, 0.88);
+  border: 1px solid var(--line);
+}
+
+.hidden {
+  display: none;
+}
+
+.summary-strip {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(247, 237, 226, 0.84), rgba(249, 220, 227, 0.78));
+  border-radius: 18px;
+  gap: 16px;
+}
+
+.summary-strip span {
+  display: block;
+  color: var(--muted);
+}
+
+.summary-strip strong {
+  font-size: 1.65rem;
+  font-family: "Fraunces", serif;
+}
+
+.payment-grid {
+  grid-template-columns: 0.82fr 1.18fr;
+  align-items: center;
+}
+
+.qr-card {
+  text-align: center;
+}
+
+.qr-box {
+  width: min(100%, 420px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 28px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  box-shadow: inset 0 0 0 2px #fff7f0;
+}
+
+.qr-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 20px;
+  object-position: center;
+}
+
+.payment-steps {
+  display: grid;
+  gap: 14px;
+}
+
+.payment-steps div {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 251, 247, 0.82);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.payment-steps span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  font-weight: 800;
+  background: linear-gradient(145deg, #f7e7dc, #f9d7df);
+}
+
+.full {
+  width: 100%;
+}
+
+@media (max-width: 920px) {
+  .hero-grid,
+  .features,
+  .order-layout,
+  .payment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy h1 {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .topbar,
+  .field-grid,
+  .summary-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    gap: 16px;
+  }
+
+  .button,
+  .ghost-link {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .gallery-grid .gallery-main {
+    height: 240px;
+  }
+
+  .gallery-grid img {
+    height: 150px;
+  }
+
+  .features article,
+  .panel,
+  .hero-card {
+    padding: 20px;
+  }
+}

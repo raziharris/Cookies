@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sea Salt Callebaut Cookies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <nav class="topbar" aria-label="Primary">
+          <div class="brand">
+            <span class="brand-mark">SC</span>
+            <div>
+              <p>Sea Salt Callebaut</p>
+              <span>Freshly baked chocolate chip cookies</span>
+            </div>
+          </div>
+          <a class="ghost-link" href="#order-form">Order now</a>
+        </nav>
+
+        <div class="hero-grid">
+          <section class="hero-copy">
+            <p class="eyebrow">One product, easy ordering</p>
+            <h1>Sea Salt Callebaut Cookies</h1>
+            <p class="hero-text">
+              Made with pure butter and Belgium chocolate chips, finished with
+              a pinch of sea salt on top. Customers can choose a size, enter
+              their quantity, fill in a few details, and pay instantly with QR
+              code.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#order-form">Start order</a>
+              <a class="button secondary" href="#payment">View payment</a>
+            </div>
+          </section>
+
+          <aside class="hero-card" aria-label="Featured product">
+            <div class="product-visual">
+              <img
+                class="hero-product-image"
+                src="assets/images/cookies/11111.jpeg"
+                alt="Sea Salt Callebaut Choc Chip Cookies on board"
+              />
+              <div class="product-badge">Ready to order</div>
+            </div>
+            <div class="hero-card-copy">
+              <p>Current product</p>
+              <h2>Sea Salt Callebaut Cookies</h2>
+              <span>Clean one-product layout that keeps the cookies, pricing, and order steps easy to understand.</span>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <main>
+        <section class="section features">
+          <article>
+            <h3>Freshly baked cookies</h3>
+            <p>Sea salt cookies with Belgium chocolate chips that look rich, premium, and gift-ready.</p>
+          </article>
+          <article>
+            <h3>Cookie size options</h3>
+            <p>Customers can choose the right size easily without dealing with too many options.</p>
+          </article>
+          <article>
+            <h3>Quick order and payment</h3>
+            <p>Order your cookies, fill in the key details, and pay quickly with DuitNow QR.</p>
+          </article>
+        </section>
+
+        <section class="section order-layout">
+          <section class="panel product-panel">
+            <div class="section-heading">
+              <p class="eyebrow">Product</p>
+              <h2>Sea Salt Callebaut Choc Chip</h2>
+            </div>
+
+            <div class="product-showcase">
+              <div class="gallery-grid">
+                <img
+                  class="gallery-main"
+                  src="assets/images/cookies/WhatsApp Image 2026-04-28 at 7.57.33 PM.jpeg"
+                  alt="Stacked jars of Sea Salt Callebaut Choc Chip Cookies"
+                />
+                <img
+                  src="assets/images/cookies/23123.jpeg"
+                  alt="Sea Salt Callebaut cookie jar with cookies"
+                />
+                <img
+                  src="assets/images/cookies/WhatsApp Image 2026-04-233218 at 7.57.34 PM.jpeg"
+                  alt="Multiple jars of Sea Salt Callebaut Choc Chip Cookies"
+                />
+              </div>
+              <div class="product-details">
+                <p class="product-price" id="price-display">RM25</p>
+                <p class="product-description">
+                  Made with pure butter and Belgium chocolate chips, with a
+                  light pinch of sea salt on top. Perfect for gifting, sharing,
+                  or everyday orders.
+                </p>
+                <p class="product-description">
+                  <strong>Ingredients:</strong> Pure Butter, Brown Sugar, Castor Sugar, Egg, Vanilla essance, Flour, Corn Starch, Callebaut Chocolate Chips, Maldon Sea Salts
+                </p>
+                <ul class="product-points">
+                  <li>Size S: RM25 for 40 plus or minus pieces, 200 gram</li>
+                  <li>Size M: RM36 for 27 plus or minus pieces, 300 gram</li>
+                  <li>Available for self collect, COD, postage, or Lalamove/Grab</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel order-panel" id="order-form">
+            <div class="section-heading">
+              <p class="eyebrow">Order form</p>
+              <h2>Place your order</h2>
+            </div>
+
+            <form class="order-form" id="order-form-fields">
+              <label>
+                Customer name
+                <input id="customer-name" type="text" placeholder="Aina Sofea" />
+              </label>
+
+              <label>
+                Phone number
+                <input
+                  id="customer-phone"
+                  type="tel"
+                  placeholder="+60 12-345 6789"
+                />
+              </label>
+
+              <div class="field-grid">
+                <label>
+                  Cookie size
+                  <select id="size-select">
+                    <option value="S">Size S</option>
+                    <option value="M">Size M</option>
+                  </select>
+                </label>
+
+                <label>
+                  Quantity
+                  <input
+                    id="quantity-input"
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value="1"
+                    placeholder="Enter quantity"
+                  />
+                </label>
+              </div>
+
+              <label>
+                Order method
+                <select id="order-method">
+                  <option value="Self collect">Self collect</option>
+                  <option value="Cash on delivery (COD)">Cash on delivery (COD)</option>
+                  <option value="Postage">Postage</option>
+                  <option value="Lalamove/Grab">Lalamove/Grab</option>
+                </select>
+              </label>
+
+              <div class="postage-fields hidden" id="postage-fields">
+                <label>
+                  Receiver name
+                  <input
+                    id="receiver-name"
+                    type="text"
+                    placeholder="Receiver full name"
+                  />
+                </label>
+
+                <label>
+                  Receiver phone number
+                  <input
+                    id="receiver-phone"
+                    type="tel"
+                    placeholder="+60 12-345 6789"
+                  />
+                </label>
+
+                <div class="field-grid">
+                  <label>
+                    Street 1
+                    <input
+                      id="street-1"
+                      type="text"
+                      placeholder="House number and street"
+                    />
+                  </label>
+
+                  <label>
+                    Street 2
+                    <input
+                      id="street-2"
+                      type="text"
+                      placeholder="Apartment, unit, area"
+                    />
+                  </label>
+                </div>
+
+                <div class="field-grid">
+                  <label>
+                    City
+                    <input id="city" type="text" placeholder="City" />
+                  </label>
+
+                  <label>
+                    Postcode
+                    <input id="postcode" type="text" placeholder="Postcode" />
+                  </label>
+                </div>
+
+                <label>
+                  State
+                  <input id="state" type="text" placeholder="State" />
+                </label>
+              </div>
+
+              <label>
+                Notes
+                <textarea
+                  id="order-notes"
+                  rows="4"
+                  placeholder="Example: gift note, preferred delivery time, special request..."
+                ></textarea>
+              </label>
+
+              <div class="summary-strip">
+                <div>
+                  <span>Total estimate</span>
+                  <strong id="total-display">RM25</strong>
+                </div>
+                <button class="button primary" id="send-order-button" type="button">
+                  Send order on WhatsApp
+                </button>
+              </div>
+            </form>
+          </section>
+        </section>
+
+        <section class="section payment-section" id="payment">
+          <div class="panel payment-panel">
+            <div class="section-heading">
+              <p class="eyebrow">Payment</p>
+              <h2>Pay with DuitNow QR</h2>
+            </div>
+
+            <div class="payment-grid">
+              <div class="qr-card">
+                <div class="qr-box" aria-label="DuitNow QR code">
+                  <img
+                    src="assets/images/payment/newqr.jpeg"
+                    alt="DuitNow QR code for payment"
+                  />
+                </div>
+              </div>
+
+              <div class="payment-steps">
+                <div>
+                  <span>1</span>
+                  <p>Choose your cookie size and review the estimated total.</p>
+                </div>
+                <div>
+                  <span>2</span>
+                  <p>Scan the QR code using your banking app or e-wallet.</p>
+                </div>
+                <div>
+                  <span>3</span>
+                  <p>Send your payment receipt through WhatsApp for confirmation.</p>
+                </div>
+                <a
+                  class="button primary full"
+                  id="send-receipt-button"
+                  href="https://wa.me/60132283772"
+                >
+                  Send receipt on WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

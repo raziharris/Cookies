@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="40" fill="#FFF8F2"/>
+  <rect x="38" y="38" width="436" height="436" rx="28" fill="white" stroke="#F2B9C3" stroke-width="12"/>
+  <rect x="76" y="76" width="108" height="108" rx="12" fill="#111111"/>
+  <rect x="102" y="102" width="56" height="56" rx="8" fill="white"/>
+  <rect x="328" y="76" width="108" height="108" rx="12" fill="#111111"/>
+  <rect x="354" y="102" width="56" height="56" rx="8" fill="white"/>
+  <rect x="76" y="328" width="108" height="108" rx="12" fill="#111111"/>
+  <rect x="102" y="354" width="56" height="56" rx="8" fill="white"/>
+  <rect x="226" y="80" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="264" y="80" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="226" y="118" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="302" y="118" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="226" y="156" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="264" y="156" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="226" y="214" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="264" y="214" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="302" y="214" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="340" y="214" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="378" y="214" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="226" y="252" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="302" y="252" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="378" y="252" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="188" y="290" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="264" y="290" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="340" y="290" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="416" y="290" width="20" height="20" rx="4" fill="#111111"/>
+  <rect x="226" y="328" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="302" y="328" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="378" y="328" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="226" y="366" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="264" y="366" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="340" y="366" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="416" y="366" width="20" height="20" rx="4" fill="#111111"/>
+  <rect x="226" y="404" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="302" y="404" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="340" y="404" width="26" height="26" rx="4" fill="#111111"/>
+  <rect x="378" y="404" width="58" height="26" rx="4" fill="#111111"/>
+  <text x="256" y="475" text-anchor="middle" fill="#DF8FA0" font-family="Arial, sans-serif" font-size="20" font-weight="700">
+    Replace with your real QR
+  </text>
+</svg>
