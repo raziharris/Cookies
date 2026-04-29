@@ -213,6 +213,44 @@ async function reserveStockForCurrentOrder() {
   return true;
 }
 
+function reserveStockForCurrentOrderInBackground() {
+  const { quantityS, quantityM } = getCookieQuantities();
+
+  if (quantityS <= 0 && quantityM <= 0) {
+    return;
+  }
+
+  if (!supabaseClient) {
+    const { stockS, stockM } = getLocalStoredStock();
+    const nextStockS = Math.max(0, stockS - quantityS);
+    const nextStockM = Math.max(0, stockM - quantityM);
+    window.localStorage.setItem(stockStorageKeyS, nextStockS);
+    window.localStorage.setItem(stockStorageKeyM, nextStockM);
+    renderStockValues({ stockS: nextStockS, stockM: nextStockM });
+    return;
+  }
+
+  const rpcUrl = `${supabaseConfig.url}/rest/v1/rpc/reserve_stock`;
+  const payload = JSON.stringify({
+    order_key: getOrderReservationKey(),
+    quantity_s: quantityS,
+    quantity_m: quantityM,
+  });
+
+  fetch(rpcUrl, {
+    method: "POST",
+    keepalive: true,
+    headers: {
+      apikey: supabaseConfig.anonKey,
+      Authorization: `Bearer ${supabaseConfig.anonKey}`,
+      "Content-Type": "application/json",
+    },
+    body: payload,
+  }).catch((error) => {
+    console.error("Background stock reservation failed:", error);
+  });
+}
+
 function updateTotal() {
   const { quantityS, quantityM } = getCookieQuantities();
   const cookiesTotal = quantityS * prices.S + quantityM * prices.M;
@@ -287,17 +325,14 @@ function buildOrderMessage() {
   return lines.join("\n");
 }
 
-async function openWhatsAppWithOrder() {
-  updateTotal();
-
-  if (!(await reserveStockForCurrentOrder())) {
-    return;
-  }
-
+function buildOrderWhatsAppLink() {
   const message = buildOrderMessage();
   const encodedMessage = encodeURIComponent(message);
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-  window.location.assign(whatsappLink);
+  return `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+}
+
+function updateOrderLink() {
+  sendOrderButton.href = buildOrderWhatsAppLink();
 }
 
 function updateReceiptLink() {
@@ -431,6 +466,19 @@ async function saveStock() {
 quantitySInput.addEventListener("input", updateTotal);
 quantityMInput.addEventListener("input", updateTotal);
 orderMethodSelect.addEventListener("change", updatePostageFields);
+quantitySInput.addEventListener("input", updateOrderLink);
+quantityMInput.addEventListener("input", updateOrderLink);
+orderMethodSelect.addEventListener("change", updateOrderLink);
+customerNameInput.addEventListener("input", updateOrderLink);
+customerPhoneInput.addEventListener("input", updateOrderLink);
+receiverNameInput.addEventListener("input", updateOrderLink);
+receiverPhoneInput.addEventListener("input", updateOrderLink);
+street1Input.addEventListener("input", updateOrderLink);
+street2Input.addEventListener("input", updateOrderLink);
+cityInput.addEventListener("input", updateOrderLink);
+postcodeInput.addEventListener("input", updateOrderLink);
+stateInput.addEventListener("input", updateOrderLink);
+orderNotesInput.addEventListener("input", updateOrderLink);
 quantitySInput.addEventListener("input", updateReceiptLink);
 quantityMInput.addEventListener("input", updateReceiptLink);
 orderMethodSelect.addEventListener("change", updateReceiptLink);
@@ -449,7 +497,7 @@ orderFormFields.querySelectorAll("input, select, textarea").forEach((field) => {
   field.addEventListener("change", resetOrderReservationStatus);
 });
 sendOrderButton.addEventListener("click", () => {
-  openWhatsAppWithOrder();
+  reserveStockForCurrentOrderInBackground();
 });
 sendReceiptButton.addEventListener("click", async (event) => {
   if (!(await reserveStockForCurrentOrder())) {
@@ -488,5 +536,6 @@ document.addEventListener("keydown", (event) => {
 
 updateTotal();
 updatePostageFields();
+updateOrderLink();
 updateReceiptLink();
 renderStock();
