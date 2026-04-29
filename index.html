@@ -22,14 +22,88 @@
               src="assets/images/logo/logo.jpeg"
               alt="Chubbychubakes logo"
             />
-            <h1 class="brand-title">Chubbychubakes</h1>
+            <div class="brand-copy">
+              <h1 class="brand-title">Chubbychubakes</h1>
+              <a
+                class="social-link"
+                href="https://www.instagram.com/chubbychubakes?igsh=MTNrcTgxZ2RiM2V1aw=="
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Visit Chubbychubakes on Instagram"
+              >
+                <svg
+                  class="social-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5a4.25 4.25 0 0 0-4.25-4.25h-8.5zm8.95 1.9a.95.95 0 1 1 0 1.9.95.95 0 0 1 0-1.9zM12 6.5A5.5 5.5 0 1 1 6.5 12 5.5 5.5 0 0 1 12 6.5zm0 1.5A4 4 0 1 0 16 12a4 4 0 0 0-4-4z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span>chubbychubakes</span>
+              </a>
+            </div>
           </div>
           <div class="header-actions">
             <a class="button primary" href="#order-form">Order now</a>
             <a class="button secondary" href="#payment">View QR</a>
+            <button class="button tertiary" id="open-settings-button" type="button">
+              Settings
+            </button>
           </div>
         </nav>
       </header>
+
+      <div class="settings-modal hidden" id="settings-panel" hidden>
+        <div class="settings-backdrop" id="settings-backdrop"></div>
+        <section
+          class="settings-dialog panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="settings-title"
+        >
+          <div class="settings-header">
+            <div>
+              <p class="eyebrow">Owner access</p>
+              <h2 id="settings-title">Settings</h2>
+            </div>
+            <button class="button secondary settings-close" id="close-settings-button" type="button">
+              Close
+            </button>
+          </div>
+
+          <div class="settings-view" id="settings-login-view">
+            <p class="modal-copy">Enter your password to manage the stock amount.</p>
+            <label>
+              Password
+              <input id="settings-password" type="password" placeholder="Enter password" />
+            </label>
+            <p class="form-feedback hidden" id="settings-error">Incorrect password.</p>
+            <button class="button primary" id="unlock-settings-button" type="button">
+              Unlock settings
+            </button>
+          </div>
+
+          <div class="settings-view hidden" id="settings-editor-view">
+            <p class="modal-copy">Set the number of jars left for each size for customers to see on the homepage.</p>
+            <div class="field-grid">
+              <label>
+                Size S stock left
+                <input id="stock-input-s" type="number" min="0" max="10000" value="0" />
+              </label>
+              <label>
+                Size M stock left
+                <input id="stock-input-m" type="number" min="0" max="10000" value="0" />
+              </label>
+            </div>
+            <p class="form-feedback hidden" id="settings-success">Stock updated.</p>
+            <button class="button primary" id="save-stock-button" type="button">
+              Save stock
+            </button>
+          </div>
+        </section>
+      </div>
 
       <main>
         <section class="section order-layout">
@@ -59,9 +133,18 @@
                   <strong>Ingredients:</strong> Pure Butter, Brown Sugar, Castor Sugar, Egg, Vanilla essance, Flour, Corn Starch, Callebaut Chocolate Chips, Maldon Sea Salts
                 </p>
                 <ul class="product-points">
-                  <li>Size S: RM25 for 27 pcs++, 200 gram</li>
-                  <li>Size M: RM36 for 40 pcs++, 300 gram</li>
-                  <li>Postage and Lalamove/Grab available</li>
+                  <li>
+                    <strong>Size S</strong>
+                    <span>RM25 • 27 pcs++ • 200 gram</span>
+                  </li>
+                  <li>
+                    <strong>Size M</strong>
+                    <span>RM36 • 40 pcs++ • 300 gram</span>
+                  </li>
+                  <li>
+                    <strong>Delivery</strong>
+                    <span>Postage and Lalamove/Grab available</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -217,6 +300,23 @@
                 <button class="button primary" id="send-order-button" type="button">
                   Send order on WhatsApp
                 </button>
+              </div>
+
+              <div class="stock-card order-stock-card" aria-live="polite">
+                <div class="stock-card-copy">
+                  <span>Available today</span>
+                  <p>Choose your jar size and place your order while stock lasts.</p>
+                </div>
+                <ul class="stock-values">
+                  <li>
+                    <strong>Size S</strong>
+                    <span id="stock-left-display-s">Size S: 0 jars</span>
+                  </li>
+                  <li>
+                    <strong>Size M</strong>
+                    <span id="stock-left-display-m">Size M: 0 jars</span>
+                  </li>
+                </ul>
               </div>
             </form>
           </section>

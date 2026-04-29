@@ -1,3 +1,5 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+.codex-ui-server.cjs
+.ui-server.*.log

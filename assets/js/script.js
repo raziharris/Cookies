@@ -7,6 +7,8 @@ const postageGuide = document.querySelector("#postage-guide");
 const deliveryGuide = document.querySelector("#delivery-guide");
 const totalDisplay = document.querySelector("#total-display");
 const summaryNote = document.querySelector("#summary-note");
+const stockLeftDisplayS = document.querySelector("#stock-left-display-s");
+const stockLeftDisplayM = document.querySelector("#stock-left-display-m");
 const customerNameInput = document.querySelector("#customer-name");
 const customerPhoneInput = document.querySelector("#customer-phone");
 const receiverNameInput = document.querySelector("#receiver-name");
@@ -17,10 +19,28 @@ const cityInput = document.querySelector("#city");
 const postcodeInput = document.querySelector("#postcode");
 const stateInput = document.querySelector("#state");
 const orderNotesInput = document.querySelector("#order-notes");
+const orderFormFields = document.querySelector("#order-form-fields");
 const sendOrderButton = document.querySelector("#send-order-button");
 const sendReceiptButton = document.querySelector("#send-receipt-button");
+const openSettingsButton = document.querySelector("#open-settings-button");
+const closeSettingsButton = document.querySelector("#close-settings-button");
+const settingsPanel = document.querySelector("#settings-panel");
+const settingsBackdrop = document.querySelector("#settings-backdrop");
+const settingsPasswordInput = document.querySelector("#settings-password");
+const unlockSettingsButton = document.querySelector("#unlock-settings-button");
+const settingsError = document.querySelector("#settings-error");
+const settingsLoginView = document.querySelector("#settings-login-view");
+const settingsEditorView = document.querySelector("#settings-editor-view");
+const stockInputS = document.querySelector("#stock-input-s");
+const stockInputM = document.querySelector("#stock-input-m");
+const saveStockButton = document.querySelector("#save-stock-button");
+const settingsSuccess = document.querySelector("#settings-success");
 
 const whatsappNumber = "60132283772";
+const settingsPassword = "cuzicunim";
+const stockStorageKeyS = "chubbychubakes_stock_left_s";
+const stockStorageKeyM = "chubbychubakes_stock_left_m";
+const stockAppliedSessionKey = "chubbychubakes_stock_applied";
 
 const prices = {
   S: 25,
@@ -54,6 +74,48 @@ function getPostageFee(totalJars) {
   }
 
   return 15;
+}
+
+function normalizeStockValue(value) {
+  return Math.min(10000, Math.max(0, Number(value) || 0));
+}
+
+function getStoredStock() {
+  return {
+    stockS: normalizeStockValue(window.localStorage.getItem(stockStorageKeyS)),
+    stockM: normalizeStockValue(window.localStorage.getItem(stockStorageKeyM)),
+  };
+}
+
+function renderStock() {
+  const { stockS, stockM } = getStoredStock();
+  stockLeftDisplayS.textContent = `Size S: ${stockS} jars`;
+  stockLeftDisplayM.textContent = `Size M: ${stockM} jars`;
+}
+
+function resetStockReservationStatus() {
+  window.sessionStorage.removeItem(stockAppliedSessionKey);
+}
+
+function reserveStockForCurrentOrder() {
+  if (window.sessionStorage.getItem(stockAppliedSessionKey) === "true") {
+    return;
+  }
+
+  const { quantityS, quantityM } = getCookieQuantities();
+
+  if (quantityS <= 0 && quantityM <= 0) {
+    return;
+  }
+
+  const { stockS, stockM } = getStoredStock();
+  const nextStockS = Math.max(0, stockS - quantityS);
+  const nextStockM = Math.max(0, stockM - quantityM);
+
+  window.localStorage.setItem(stockStorageKeyS, nextStockS);
+  window.localStorage.setItem(stockStorageKeyM, nextStockM);
+  window.sessionStorage.setItem(stockAppliedSessionKey, "true");
+  renderStock();
 }
 
 function updateTotal() {
@@ -132,6 +194,7 @@ function buildOrderMessage() {
 
 function openWhatsAppWithOrder() {
   updateTotal();
+  reserveStockForCurrentOrder();
   const message = buildOrderMessage();
   const encodedMessage = encodeURIComponent(message);
   window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
@@ -141,6 +204,52 @@ function updateReceiptLink() {
   const message = `${buildOrderMessage()}\n\nI have completed the payment and attached the receipt.`;
   const encodedMessage = encodeURIComponent(message);
   sendReceiptButton.href = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+}
+
+function openSettingsPanel() {
+  settingsPanel.hidden = false;
+  settingsPanel.classList.remove("hidden");
+  document.body.classList.add("modal-open");
+  settingsPasswordInput.value = "";
+  settingsError.classList.add("hidden");
+  settingsSuccess.classList.add("hidden");
+  settingsLoginView.classList.remove("hidden");
+  settingsEditorView.classList.add("hidden");
+  settingsPasswordInput.focus();
+}
+
+function closeSettingsPanel() {
+  settingsPanel.hidden = true;
+  settingsPanel.classList.add("hidden");
+  document.body.classList.remove("modal-open");
+}
+
+function unlockSettings() {
+  if (settingsPasswordInput.value !== settingsPassword) {
+    settingsError.classList.remove("hidden");
+    settingsSuccess.classList.add("hidden");
+    return;
+  }
+
+  settingsError.classList.add("hidden");
+  settingsLoginView.classList.add("hidden");
+  settingsEditorView.classList.remove("hidden");
+  const { stockS, stockM } = getStoredStock();
+  stockInputS.value = stockS;
+  stockInputM.value = stockM;
+  stockInputS.focus();
+}
+
+function saveStock() {
+  const stockS = normalizeStockValue(stockInputS.value);
+  const stockM = normalizeStockValue(stockInputM.value);
+  stockInputS.value = stockS;
+  stockInputM.value = stockM;
+  window.localStorage.setItem(stockStorageKeyS, stockS);
+  window.localStorage.setItem(stockStorageKeyM, stockM);
+  resetStockReservationStatus();
+  renderStock();
+  settingsSuccess.classList.remove("hidden");
 }
 
 quantitySInput.addEventListener("input", updateTotal);
@@ -159,8 +268,39 @@ cityInput.addEventListener("input", updateReceiptLink);
 postcodeInput.addEventListener("input", updateReceiptLink);
 stateInput.addEventListener("input", updateReceiptLink);
 orderNotesInput.addEventListener("input", updateReceiptLink);
+orderFormFields.querySelectorAll("input, select, textarea").forEach((field) => {
+  field.addEventListener("input", resetStockReservationStatus);
+  field.addEventListener("change", resetStockReservationStatus);
+});
 sendOrderButton.addEventListener("click", openWhatsAppWithOrder);
+sendReceiptButton.addEventListener("click", reserveStockForCurrentOrder);
+openSettingsButton.addEventListener("click", openSettingsPanel);
+closeSettingsButton.addEventListener("click", closeSettingsPanel);
+settingsBackdrop.addEventListener("click", closeSettingsPanel);
+unlockSettingsButton.addEventListener("click", unlockSettings);
+saveStockButton.addEventListener("click", saveStock);
+settingsPasswordInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    unlockSettings();
+  }
+});
+stockInputS.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    saveStock();
+  }
+});
+stockInputM.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    saveStock();
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !settingsPanel.hidden) {
+    closeSettingsPanel();
+  }
+});
 
 updateTotal();
 updatePostageFields();
 updateReceiptLink();
+renderStock();
