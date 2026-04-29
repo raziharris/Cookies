@@ -185,9 +185,9 @@ async function reserveStockForCurrentOrder() {
   }
 
   const { data, error } = await supabaseClient.rpc("reserve_stock", {
-    order_key: getOrderReservationKey(),
-    quantity_s: quantityS,
-    quantity_m: quantityM,
+    p_order_key: getOrderReservationKey(),
+    p_quantity_s: quantityS,
+    p_quantity_m: quantityM,
   });
 
   if (error || !data) {
