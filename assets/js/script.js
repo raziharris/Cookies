@@ -213,44 +213,6 @@ async function reserveStockForCurrentOrder() {
   return true;
 }
 
-function reserveStockForCurrentOrderInBackground() {
-  const { quantityS, quantityM } = getCookieQuantities();
-
-  if (quantityS <= 0 && quantityM <= 0) {
-    return;
-  }
-
-  if (!supabaseClient) {
-    const { stockS, stockM } = getLocalStoredStock();
-    const nextStockS = Math.max(0, stockS - quantityS);
-    const nextStockM = Math.max(0, stockM - quantityM);
-    window.localStorage.setItem(stockStorageKeyS, nextStockS);
-    window.localStorage.setItem(stockStorageKeyM, nextStockM);
-    renderStockValues({ stockS: nextStockS, stockM: nextStockM });
-    return;
-  }
-
-  const rpcUrl = `${supabaseConfig.url}/rest/v1/rpc/reserve_stock`;
-  const payload = JSON.stringify({
-    order_key: getOrderReservationKey(),
-    quantity_s: quantityS,
-    quantity_m: quantityM,
-  });
-
-  fetch(rpcUrl, {
-    method: "POST",
-    keepalive: true,
-    headers: {
-      apikey: supabaseConfig.anonKey,
-      Authorization: `Bearer ${supabaseConfig.anonKey}`,
-      "Content-Type": "application/json",
-    },
-    body: payload,
-  }).catch((error) => {
-    console.error("Background stock reservation failed:", error);
-  });
-}
-
 function updateTotal() {
   const { quantityS, quantityM } = getCookieQuantities();
   const cookiesTotal = quantityS * prices.S + quantityM * prices.M;
@@ -496,8 +458,16 @@ orderFormFields.querySelectorAll("input, select, textarea").forEach((field) => {
   field.addEventListener("input", resetOrderReservationStatus);
   field.addEventListener("change", resetOrderReservationStatus);
 });
-sendOrderButton.addEventListener("click", () => {
-  reserveStockForCurrentOrderInBackground();
+sendOrderButton.addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  const whatsappLink = sendOrderButton.href;
+
+  if (!(await reserveStockForCurrentOrder())) {
+    return;
+  }
+
+  window.location.assign(whatsappLink);
 });
 sendReceiptButton.addEventListener("click", async (event) => {
   if (!(await reserveStockForCurrentOrder())) {
