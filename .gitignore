@@ -3,3 +3,4 @@ Thumbs.db
 desktop.ini
 .codex-ui-server.cjs
 .ui-server.*.log
+assets/js/supabase-config.local.js

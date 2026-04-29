@@ -37,15 +37,40 @@ const saveStockButton = document.querySelector("#save-stock-button");
 const settingsSuccess = document.querySelector("#settings-success");
 
 const whatsappNumber = "60132283772";
-const settingsPassword = "cuzicunim";
+const fallbackSettingsPassword = "cuzicunim";
 const stockStorageKeyS = "chubbychubakes_stock_left_s";
 const stockStorageKeyM = "chubbychubakes_stock_left_m";
-const stockAppliedSessionKey = "chubbychubakes_stock_applied";
+const orderReservationKey = "chubbychubakes_order_reservation_key";
+const supabaseConfig = window.ORDERCAKE_SUPABASE_CONFIG || {};
+const hasSupabase =
+  Boolean(window.supabase) &&
+  Boolean(supabaseConfig.url) &&
+  Boolean(supabaseConfig.anonKey);
+const supabaseClient = hasSupabase
+  ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    })
+  : null;
 
 const prices = {
   S: 25,
   M: 36,
 };
+
+let activeAdminPassword = "";
+
+function canUseLocalFallback(error) {
+  return (
+    !error ||
+    error.code === "PGRST202" ||
+    error.code === "PGRST301" ||
+    error.message === "Failed to fetch"
+  );
+}
 
 function normalizeQuantity(input, fallback = 0) {
   const value = Math.min(1000, Math.max(0, Number(input.value) || fallback));
@@ -80,42 +105,112 @@ function normalizeStockValue(value) {
   return Math.min(10000, Math.max(0, Number(value) || 0));
 }
 
-function getStoredStock() {
+function getLocalStoredStock() {
   return {
     stockS: normalizeStockValue(window.localStorage.getItem(stockStorageKeyS)),
     stockM: normalizeStockValue(window.localStorage.getItem(stockStorageKeyM)),
   };
 }
 
-function renderStock() {
-  const { stockS, stockM } = getStoredStock();
+function renderStockValues({ stockS, stockM }) {
   stockLeftDisplayS.textContent = `Size S: ${stockS} jars`;
   stockLeftDisplayM.textContent = `Size M: ${stockM} jars`;
 }
 
-function resetStockReservationStatus() {
-  window.sessionStorage.removeItem(stockAppliedSessionKey);
-}
-
-function reserveStockForCurrentOrder() {
-  if (window.sessionStorage.getItem(stockAppliedSessionKey) === "true") {
-    return;
+async function getStoredStock() {
+  if (!supabaseClient) {
+    return getLocalStoredStock();
   }
 
+  const { data, error } = await supabaseClient
+    .from("stock_state")
+    .select("stock_s, stock_m")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) {
+    throw error || new Error("Unable to load stock");
+  }
+
+  return {
+    stockS: normalizeStockValue(data.stock_s),
+    stockM: normalizeStockValue(data.stock_m),
+  };
+}
+
+async function renderStock() {
+  try {
+    renderStockValues(await getStoredStock());
+  } catch (error) {
+    console.error("Stock sync failed:", error);
+    renderStockValues(getLocalStoredStock());
+  }
+}
+
+function resetOrderReservationStatus() {
+  window.sessionStorage.removeItem(orderReservationKey);
+}
+
+function getOrderReservationKey() {
+  let orderKey = window.sessionStorage.getItem(orderReservationKey);
+
+  if (!orderKey) {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      orderKey = window.crypto.randomUUID();
+    } else {
+      orderKey = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    window.sessionStorage.setItem(orderReservationKey, orderKey);
+  }
+
+  return orderKey;
+}
+
+async function reserveStockForCurrentOrder() {
   const { quantityS, quantityM } = getCookieQuantities();
 
   if (quantityS <= 0 && quantityM <= 0) {
-    return;
+    return true;
   }
 
-  const { stockS, stockM } = getStoredStock();
-  const nextStockS = Math.max(0, stockS - quantityS);
-  const nextStockM = Math.max(0, stockM - quantityM);
+  if (!supabaseClient) {
+    const { stockS, stockM } = getLocalStoredStock();
+    const nextStockS = Math.max(0, stockS - quantityS);
+    const nextStockM = Math.max(0, stockM - quantityM);
+    window.localStorage.setItem(stockStorageKeyS, nextStockS);
+    window.localStorage.setItem(stockStorageKeyM, nextStockM);
+    renderStockValues({ stockS: nextStockS, stockM: nextStockM });
+    return true;
+  }
 
-  window.localStorage.setItem(stockStorageKeyS, nextStockS);
-  window.localStorage.setItem(stockStorageKeyM, nextStockM);
-  window.sessionStorage.setItem(stockAppliedSessionKey, "true");
-  renderStock();
+  const { data, error } = await supabaseClient.rpc("reserve_stock", {
+    order_key: getOrderReservationKey(),
+    quantity_s: quantityS,
+    quantity_m: quantityM,
+  });
+
+  if (error || !data) {
+    console.error("Stock reservation failed:", error);
+    if (canUseLocalFallback(error)) {
+      const { stockS, stockM } = getLocalStoredStock();
+      const nextStockS = Math.max(0, stockS - quantityS);
+      const nextStockM = Math.max(0, stockM - quantityM);
+      window.localStorage.setItem(stockStorageKeyS, nextStockS);
+      window.localStorage.setItem(stockStorageKeyM, nextStockM);
+      renderStockValues({ stockS: nextStockS, stockM: nextStockM });
+      return true;
+    }
+
+    window.alert("Unable to update shared stock right now. Please try again.");
+    return false;
+  }
+
+  renderStockValues({
+    stockS: normalizeStockValue(data.stock_s),
+    stockM: normalizeStockValue(data.stock_m),
+  });
+  return true;
 }
 
 function updateTotal() {
@@ -192,12 +287,27 @@ function buildOrderMessage() {
   return lines.join("\n");
 }
 
-function openWhatsAppWithOrder() {
+async function openWhatsAppWithOrder() {
   updateTotal();
-  reserveStockForCurrentOrder();
+  const popupWindow = window.open("about:blank", "_blank");
+
+  if (!(await reserveStockForCurrentOrder())) {
+    if (popupWindow) {
+      popupWindow.close();
+    }
+    return;
+  }
+
   const message = buildOrderMessage();
   const encodedMessage = encodeURIComponent(message);
-  window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+  if (popupWindow) {
+    popupWindow.location = whatsappLink;
+    return;
+  }
+
+  window.open(whatsappLink, "_blank");
 }
 
 function updateReceiptLink() {
@@ -211,6 +321,7 @@ function openSettingsPanel() {
   settingsPanel.classList.remove("hidden");
   document.body.classList.add("modal-open");
   settingsPasswordInput.value = "";
+  settingsError.textContent = "Incorrect password.";
   settingsError.classList.add("hidden");
   settingsSuccess.classList.add("hidden");
   settingsLoginView.classList.remove("hidden");
@@ -224,31 +335,106 @@ function closeSettingsPanel() {
   document.body.classList.remove("modal-open");
 }
 
-function unlockSettings() {
-  if (settingsPasswordInput.value !== settingsPassword) {
+async function unlockSettings() {
+  const enteredPassword = settingsPasswordInput.value.trim();
+
+  if (!enteredPassword) {
+    settingsError.textContent = "Incorrect password.";
     settingsError.classList.remove("hidden");
     settingsSuccess.classList.add("hidden");
     return;
   }
 
+  if (!supabaseClient) {
+    if (enteredPassword !== fallbackSettingsPassword) {
+      settingsError.textContent = "Incorrect password.";
+      settingsError.classList.remove("hidden");
+      settingsSuccess.classList.add("hidden");
+      return;
+    }
+
+    activeAdminPassword = enteredPassword;
+  } else {
+    const { data, error } = await supabaseClient.rpc("verify_admin_password", {
+      admin_password: enteredPassword,
+    });
+
+    if (error || data !== true) {
+      if (canUseLocalFallback(error) && enteredPassword === fallbackSettingsPassword) {
+        activeAdminPassword = enteredPassword;
+        settingsSuccess.textContent = "Using local stock until Supabase setup is completed.";
+        settingsSuccess.classList.remove("hidden");
+      } else {
+        settingsError.textContent = "Incorrect password.";
+        settingsError.classList.remove("hidden");
+        settingsSuccess.classList.add("hidden");
+        return;
+      }
+    } else {
+      activeAdminPassword = enteredPassword;
+    }
+  }
+
   settingsError.classList.add("hidden");
   settingsLoginView.classList.add("hidden");
   settingsEditorView.classList.remove("hidden");
-  const { stockS, stockM } = getStoredStock();
-  stockInputS.value = stockS;
-  stockInputM.value = stockM;
+
+  try {
+    const { stockS, stockM } = await getStoredStock();
+    stockInputS.value = stockS;
+    stockInputM.value = stockM;
+  } catch (error) {
+    console.error("Unable to load stock for settings:", error);
+    const { stockS, stockM } = getLocalStoredStock();
+    stockInputS.value = stockS;
+    stockInputM.value = stockM;
+  }
+
   stockInputS.focus();
 }
 
-function saveStock() {
+async function saveStock() {
   const stockS = normalizeStockValue(stockInputS.value);
   const stockM = normalizeStockValue(stockInputM.value);
   stockInputS.value = stockS;
   stockInputM.value = stockM;
-  window.localStorage.setItem(stockStorageKeyS, stockS);
-  window.localStorage.setItem(stockStorageKeyM, stockM);
-  resetStockReservationStatus();
-  renderStock();
+
+  if (!supabaseClient) {
+    window.localStorage.setItem(stockStorageKeyS, stockS);
+    window.localStorage.setItem(stockStorageKeyM, stockM);
+    renderStockValues({ stockS, stockM });
+  } else {
+    const { data, error } = await supabaseClient.rpc("admin_set_stock", {
+      admin_password: activeAdminPassword || settingsPasswordInput.value.trim(),
+      new_stock_s: stockS,
+      new_stock_m: stockM,
+    });
+
+    if (error || !data) {
+      console.error("Unable to save shared stock:", error);
+      if (canUseLocalFallback(error)) {
+        window.localStorage.setItem(stockStorageKeyS, stockS);
+        window.localStorage.setItem(stockStorageKeyM, stockM);
+        renderStockValues({ stockS, stockM });
+        settingsSuccess.textContent = "Saved locally until Supabase setup is completed.";
+      } else {
+        settingsError.textContent = "Unable to save shared stock.";
+        settingsError.classList.remove("hidden");
+        settingsSuccess.classList.add("hidden");
+        return;
+      }
+    } else {
+      renderStockValues({
+        stockS: normalizeStockValue(data.stock_s),
+        stockM: normalizeStockValue(data.stock_m),
+      });
+      settingsSuccess.textContent = "Stock updated.";
+    }
+  }
+
+  resetOrderReservationStatus();
+  settingsError.textContent = "Incorrect password.";
+  settingsError.classList.add("hidden");
   settingsSuccess.classList.remove("hidden");
 }
 
@@ -269,16 +455,26 @@ postcodeInput.addEventListener("input", updateReceiptLink);
 stateInput.addEventListener("input", updateReceiptLink);
 orderNotesInput.addEventListener("input", updateReceiptLink);
 orderFormFields.querySelectorAll("input, select, textarea").forEach((field) => {
-  field.addEventListener("input", resetStockReservationStatus);
-  field.addEventListener("change", resetStockReservationStatus);
+  field.addEventListener("input", resetOrderReservationStatus);
+  field.addEventListener("change", resetOrderReservationStatus);
 });
-sendOrderButton.addEventListener("click", openWhatsAppWithOrder);
-sendReceiptButton.addEventListener("click", reserveStockForCurrentOrder);
+sendOrderButton.addEventListener("click", () => {
+  openWhatsAppWithOrder();
+});
+sendReceiptButton.addEventListener("click", async (event) => {
+  if (!(await reserveStockForCurrentOrder())) {
+    event.preventDefault();
+  }
+});
 openSettingsButton.addEventListener("click", openSettingsPanel);
 closeSettingsButton.addEventListener("click", closeSettingsPanel);
 settingsBackdrop.addEventListener("click", closeSettingsPanel);
-unlockSettingsButton.addEventListener("click", unlockSettings);
-saveStockButton.addEventListener("click", saveStock);
+unlockSettingsButton.addEventListener("click", () => {
+  unlockSettings();
+});
+saveStockButton.addEventListener("click", () => {
+  saveStock();
+});
 settingsPasswordInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     unlockSettings();
