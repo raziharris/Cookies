@@ -89,9 +89,9 @@ end;
 $$;
 
 create or replace function public.reserve_stock(
-  order_key text,
-  quantity_s integer,
-  quantity_m integer
+  p_order_key text,
+  p_quantity_s integer,
+  p_quantity_m integer
 )
 returns public.stock_state
 language plpgsql
@@ -99,16 +99,16 @@ security definer
 set search_path = public
 as $$
 declare
-  normalized_s integer := greatest(0, coalesce(quantity_s, 0));
-  normalized_m integer := greatest(0, coalesce(quantity_m, 0));
+  normalized_s integer := greatest(0, coalesce(p_quantity_s, 0));
+  normalized_m integer := greatest(0, coalesce(p_quantity_m, 0));
   result_row public.stock_state;
 begin
-  if coalesce(order_key, '') = '' then
+  if coalesce(p_order_key, '') = '' then
     raise exception 'Order key is required';
   end if;
 
   insert into public.stock_reservations (order_key, quantity_s, quantity_m)
-  values (order_key, normalized_s, normalized_m)
+  values (p_order_key, normalized_s, normalized_m)
   on conflict (order_key) do nothing;
 
   if not found then
