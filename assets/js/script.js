@@ -289,25 +289,15 @@ function buildOrderMessage() {
 
 async function openWhatsAppWithOrder() {
   updateTotal();
-  const popupWindow = window.open("about:blank", "_blank");
 
   if (!(await reserveStockForCurrentOrder())) {
-    if (popupWindow) {
-      popupWindow.close();
-    }
     return;
   }
 
   const message = buildOrderMessage();
   const encodedMessage = encodeURIComponent(message);
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-  if (popupWindow) {
-    popupWindow.location = whatsappLink;
-    return;
-  }
-
-  window.open(whatsappLink, "_blank");
+  window.location.assign(whatsappLink);
 }
 
 function updateReceiptLink() {
