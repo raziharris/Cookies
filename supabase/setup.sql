@@ -18,7 +18,7 @@ create table if not exists public.stock_admin_auth (
 );
 
 insert into public.stock_admin_auth (id, password_hash)
-values (1, crypt('cuzicunim', gen_salt('bf')))
+values (1, extensions.crypt('cuzicunim', extensions.gen_salt('bf')))
 on conflict (id) do nothing;
 
 create table if not exists public.stock_reservations (
@@ -54,7 +54,7 @@ begin
   where id = 1;
 
   return stored_hash is not null
-    and crypt(admin_password, stored_hash) = stored_hash;
+    and extensions.crypt(admin_password, stored_hash) = stored_hash;
 end;
 $$;
 
